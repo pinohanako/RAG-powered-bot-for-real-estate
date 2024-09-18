@@ -1,6 +1,0 @@
-.env
-
-context_vault/
-config/
-.mypy_cache/
-__pycache__/
