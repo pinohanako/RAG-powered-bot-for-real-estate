@@ -25,41 +25,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 logger = logging.getLogger(__name__)
 
-#def connect_to_db():
-#    POSTGRES_USER = os.getenv("POSTGRES_USER")
-#    POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-#    POSTGRES_DB_IP = os.getenv("POSTGRES_DB_IP")
-#    conn_info = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_DB_IP}:5432/messages"
-#    conn = psycopg2.connect(conn_info, cursor_factory=RealDictCursor)
-#    return conn
-'''
-class VoiceTranscriptionMiddleware(BaseMiddleware):
-    async def __call__(
-        self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-        event: Message,
-        data: Dict[str, Any],
-    ) -> Any:
-        logger.debug(
-            'Event type %s',
-            event.__class__.__name__
-        )
-        # Checking if a voice message
-        if event.content_type == ContentType.VOICE:
-            bot = data["bot"]
-            transcribed_message = await voice_processing(event, bot)
-            data["text"] = transcribed_message
-            result = await handler(event, data)
-            logger.debug('leaving %s with a transcription', __class__.__name__)
-            return result
-        else:
-            result = await handler(event, data)
-            logger.debug('leaving %s with an original text', __class__.__name__)
-            return result
-'''
-
-
-
 class VoiceTranscriptionMiddleware(BaseMiddleware):
     async def __call__(
         self,
@@ -87,8 +52,6 @@ class VoiceTranscriptionMiddleware(BaseMiddleware):
             data["session_id"] = data_extracted["session_id"]
             data["full_name"] = data_extracted["full_name"]
             result = await handler(event, data)
-            #cursor.execute("UPDATE message_store AS ms SET message = jsonb_set(ms.message, '{data, id}', to_jsonb(%s), true) FROM session_store AS ss WHERE ms.session_id = ss.session_id::uuid")
-            #cursor.execute("UPDATE message_store AS ms SET message = jsonb_set(ms.message, '{data, name}', to_jsonb(%s), true) FROM session_store AS ss WHERE ms.session_id = ss.session_id::uuid")
             logger.debug('leaving %s with a transcription', __class__.__name__)
             return result
         else:
@@ -149,20 +112,3 @@ class CallbackOuterMiddleware(BaseMiddleware):
             logger.debug('Data are inserted into postgres = we have a new user!')
             result = await handler(event, data)
             return result
-
-class ThirdOuterMiddleware(BaseMiddleware):
-    async def __call__(
-        self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-        event: TelegramObject,
-        data: Dict[str, Any]
-    ) -> Any:
-        logger.debug(
-            'Вошли в миддлварь %s, тип события %s',
-            __class__.__name__,
-            event.__class__.__name__
-        )
-        result = await handler(event, data)
-        logger.debug('Выходим из миддлвари  %s', __class__.__name__)
-
-        return result
