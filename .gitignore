@@ -3,3 +3,5 @@ Dockerrun.aws.json
 .env.example
 config/
 context_vault/
+.mypy_cache/
+__pycache__/
