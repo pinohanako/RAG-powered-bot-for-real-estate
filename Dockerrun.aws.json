@@ -1,0 +1,14 @@
+Dockerrun.aws.json
+{
+ "AWSEBDockerrunVersion": "1",
+ "Image": {
+   "Name": "yapinoo/telegram-docker-uplink",
+   "Update": "true"
+ },
+"Ports": [
+ {
+   "ContainerPort": 5000,
+   "HostPort": 8000
+ }
+]
+}

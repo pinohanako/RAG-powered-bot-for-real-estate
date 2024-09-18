@@ -1,0 +1,101 @@
+services:
+  postgresDB:
+    image: postgres
+    ports:
+     - 5432:5432
+    restart: always
+    volumes:
+     - pgdata:/var/lib/postgresql/data 
+#    env_file:
+#     - .env
+    env_file:
+     - config/postgres.env
+#    secrets:
+#     - db-secrets
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    networks:
+      - net
+         #appnet:
+         #    ipv4_address: 172.16.0.3
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      postgresDB:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    networks:
+      - net
+        #appnet:
+        #    ipv4_address: 172.16.0.3
+  bot-uplink:
+    restart: always
+    container_name: bot-uplink
+    image: bot-uplink
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on: #This specifies that a dependency is expected to be “healthy” before starting a dependent service.
+#      chroma:
+#        condition: service_healthy
+      postgresDB:
+        condition: service_healthy 
+    volumes:
+     - type: bind
+       source: /home/pino/hidden/data/
+       target: /home/pino/perseus_chat/var/data/
+    env_file:
+     - .env
+#      - type: bind
+#        source: usr/bin/ffprobe/
+#        target: /home/pino/perseus_chat/etc/ffprobe/
+#    env_file:
+#     - config/app.env
+    networks:
+     - net
+#        appnet:
+#            ipv4_address: 172.16.0.3
+  proxy:
+    image: nginx
+    volumes:
+      - type: bind
+        source: /home/pino/hidden/proxy/nginx.conf
+        target: /home/pino/perseus_chat/etc/nginx/conf.d/default.conf
+        read_only: true
+    networks:
+      - net
+#        appnet:
+#            ipv4_address: 172.16.0.3
+#    ports:
+#      - 80:80
+#    depends_on:
+#      - backend
+
+
+
+#secrets:
+#   db-secrets:
+#     file: postgres-secrets.txt
+
+volumes:
+  index_data:
+    driver: local
+  backups:
+    driver: local
+  pgdata:
+
+networks:
+  net:
+    driver: bridge
+
+#    appnet:
+#        driver: bridge
+#        ipam:
+#            driver: default
+#            config:
+#                - subnet: "172.16.0.0/28"
