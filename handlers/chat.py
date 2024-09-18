@@ -236,8 +236,8 @@ async def sticker(message: Message):
     conn = connect_to_db()
     cursor = conn.cursor()
 
-    await cursor.execute("SELECT used_sticker_phrases FROM session_store WHERE user_id = %s", (chat_id,))
-    data_extracted = await cursor.fetchone()
+    cursor.execute("SELECT used_sticker_phrases FROM session_store WHERE user_id = %s", (chat_id,))
+    data_extracted = cursor.fetchone()
     used_phrases_stickers = data_extracted["used_sticker_phrases"] if data_extracted else []
 
     if chat_id not in used_phrases_stickers:
@@ -249,17 +249,18 @@ async def sticker(message: Message):
         random_phrase = random.choice(unused_phrases)
         used_phrases_stickers[chat_id].append(random_phrase)
         await asyncio.sleep(5)
-        await cursor.execute("UPDATE session_store SET used_sticker_phrases = %s WHERE user_id = %s", (used_phrases_stickers, chat_id))
-        await conn.commit()
+        cursor.execute("UPDATE session_store SET used_sticker_phrases = %s WHERE user_id = %s", (used_phrases_stickers, chat_id))
+        conn.commit()
         await message.answer(random_phrase)
     else:
         await asyncio.sleep(3)
         await message.answer(f"Спасибо, {message.from_user.full_name}, но я устала намекать, что мне это не нравится!\nНам пора поговорить?")
+    conn.close()
 
     # Обновление списка использованных фраз в базе данных
     #await cursor.execute("UPDATE session_store SET used_sticker_phrases = %s WHERE user_id = %s", (used_phrases_stickers, chat_id))
     #await conn.commit()
-    await conn.close()
+
 
 #################### работает ниже
 '''
