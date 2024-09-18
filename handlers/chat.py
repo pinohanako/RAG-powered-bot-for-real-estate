@@ -238,7 +238,7 @@ async def sticker(message: Message):
 
     cursor.execute("SELECT used_sticker_phrases FROM session_store WHERE user_id = %s", (chat_id,))
     data_extracted = cursor.fetchone()
-    used_phrases_stickers = data_extracted["used_sticker_phrases"] if data_extracted else []
+    used_phrases_stickers = data_extracted["used_sticker_phrases"] if data_extracted is not None else []
 
     if chat_id not in used_phrases_stickers:
         used_phrases_stickers[chat_id] = []
