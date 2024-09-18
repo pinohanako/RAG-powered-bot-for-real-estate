@@ -1,1 +1,1 @@
-Telegram bot with conversational RAG chain to ptovide answers for a real estate agency
+#Telegram bot with RAG-powered conversational responses for a real estate agency.
