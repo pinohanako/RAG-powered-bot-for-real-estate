@@ -3,19 +3,16 @@ import re
 import sys
 import asyncio
 import logging
-import uuid
-import json
 import requests
 
-from typing import Any, Awaitable, Callable, Dict, List
-
 from os import getenv
-from aiogram import Bot
-from aiogram.methods.send_contact import SendContact
+from typing import Any, Awaitable, Callable, Dict, List
 from aiogram import types, F, Router, Bot, flags, Dispatcher
-from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.filters import Command, CommandObject, CommandStart
+from aiogram.methods.send_contact import SendContact
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.filters import Command, CommandObject, CommandStart 
+from aiogram.utils.chat_action import ChatActionSender
+from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram.types import (
     CallbackQuery,
     Message,
@@ -23,7 +20,6 @@ from aiogram.types import (
     User,
     Update
 )
-
 from aiogram_dialog import (
     Dialog, 
     DialogManager, 
@@ -39,16 +35,13 @@ from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import (
     Checkbox, Button, Url, Back, Row, Cancel, Start, Next, Back
 )
-
-from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.client.bot import DefaultBotProperties
 
 from aiogram.fsm.storage.memory import MemoryStorage
 storage = MemoryStorage()
 
 from collections import defaultdict
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler
 
 from modules.chain_definition import (
      conversational_rag_chain_for_metadata_search, 
@@ -59,36 +52,12 @@ from filters.filters import KeywordFilter, MyTrueFilter, HasPhoneNumberFilter
 #from handlers.db_functions import get_user_data, insert_user, update_user_data
 from utils.utils import get_images_from_directory, connect_to_db, get_all_users
 
-from aiogram.utils.chat_action import ChatActionSender
-from aiogram.utils.chat_action import ChatActionMiddleware
-from aiogram.utils.media_group import MediaGroupBuilder
-
 # Ids and mini-functions for dialog-aiogram framework
 from context_vault.context_vault import (
      BOT_REPLIES, 
      ADDRESS_CHOICES, 
      GUEST_CHOICES, 
      AGE_CHOICES)
-     #EXTEND_BTN_ID,
-     #EXTEND_CATALOG_ID,
-     #LENINA_A_ID,
-     #LENINA_ID,
-     #KALININA_ID,
-     #PROFINTERNA_ID,
-     #ONE_GUEST_ID,
-     #TWO_GUEST_ID,
-     #THREE_GUEST_ID,
-     #MORE_GUEST_ID,
-     #old_GUEST_ID,
-     #adult_GUEST_ID,
-     #young_GUEST_ID,
-     #little_GUEST_ID
-'''
-from modules.chain_definition import (
-     conversational_rag_chain,
-     conversational_rag_chain_for_metadata_search,
-     conversational_rag_chain_for_description_search)
-'''
 
 # Инициализируем логгер модуля
 logger = logging.getLogger(__name__)
@@ -99,10 +68,10 @@ trigger_router = Router()
 EXTEND_BTN_ID = "extend"
 EXTEND_CATALOG_ID = "extended_catalog"
 
-LENINA_A_ID = "lenina_27a"
-LENINA_ID = "lenina_54"
-KALININA_ID = "kalinina_3"
-PROFINTERNA_ID = "profinterna_50"
+ADDRESS_1_ID = "address_1"
+ADDRESS_2_ID = "address_2"
+ADDRESS_3_ID = "address_3"
+ADDRESS_4_ID = "address_4"
 
 ONE_GUEST_ID = "one"
 TWO_GUEST_ID = "two"
@@ -148,7 +117,7 @@ async def mode_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]
 async def address_getter(dialog_manager: DialogManager, **kwargs) -> dict: 
     user_id = dialog_manager.event.from_user.id
 
-    address_ids = [LENINA_A_ID, LENINA_ID, KALININA_ID, PROFINTERNA_ID]
+    address_ids = [ADDRESS_1_ID, ADDRESS_2_ID, ADDRESS_3_ID, ADDRESS_4_ID]
     selected_address = None
     for checkbox_id in address_ids:
         if dialog_manager.find(checkbox_id).is_checked():
@@ -357,22 +326,22 @@ form_dialog = Dialog(
         Checkbox(
             checked_text=Const(BOT_REPLIES['address-1-with-tooltip']),
             unchecked_text=Const(BOT_REPLIES['address-1']),
-            id=LENINA_A_ID,
+            id=ADDRESS_1_ID,
             ),
         Checkbox(
             checked_text=Const(BOT_REPLIES['address-2-with-tooltip']),
             unchecked_text=Const(BOT_REPLIES['address-2']),
-            id=LENINA_ID,
+            id=ADDRESS_2_ID,
             ),
         Checkbox(
             checked_text=Const(BOT_REPLIES['address-3-with-tooltip']),
             unchecked_text=Const(BOT_REPLIES['address-3']),
-            id=KALININA_ID,
+            id=ADDRESS_3_ID,
             ),
         Checkbox(
             checked_text=Const(BOT_REPLIES['address-4-with-tooltip']),
             unchecked_text=Const(BOT_REPLIES['address-4']),
-            id=PROFINTERNA_ID,
+            id=ADDRESS_4_ID,
             ),
         Row(
             Back(text=Const("Назад")),
@@ -564,22 +533,22 @@ faq_dialog = Dialog(
          Checkbox(
              checked_text=Const(BOT_REPLIES['address-1-with-tooltip']),
              unchecked_text=Const(BOT_REPLIES['address-1']),
-             id=LENINA_A_ID,
+             id=ADDRESS_1_ID,
              ),
          Checkbox(
              checked_text=Const(BOT_REPLIES['address-2-with-tooltip']),
              unchecked_text=Const(BOT_REPLIES['address-2']),
-             id=LENINA_ID,
+             id=ADDRESS_2_ID,
              ),
          Checkbox(
              checked_text=Const(BOT_REPLIES['address-3-with-tooltip']),
              unchecked_text=Const(BOT_REPLIES['address-3']),
-             id=KALININA_ID,
+             id=ADDRESS_3_ID,
              ),
          Checkbox(
              checked_text=Const(BOT_REPLIES['address-4-with-tooltip']),
              unchecked_text=Const(BOT_REPLIES['address-4']),
-             id=PROFINTERNA_ID,
+             id=ADDRESS_4_ID,
              ),
          Row(
              Back(text=Const("Назад")),
