@@ -136,7 +136,7 @@ def home_page_kb(user_telegram_id: int):
         keyboard=kb_list,
         resize_keyboard=True,
         one_time_keyboard=True,
-        input_field_placeholder="Воспользуйтесь меню:"
+        input_field_placeholder="Воспользуйтесь меню:" 
     )
 
 def check_database_updates():

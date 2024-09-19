@@ -38,4 +38,4 @@ class HasPhoneNumberFilter(BaseFilter):
 
         if len(found_phome_numbers) > 0:
             return {"phone_numbers": found_phome_numbers}
-        return False
+        return False 

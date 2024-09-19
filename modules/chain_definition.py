@@ -601,6 +601,6 @@ conversational_rag_chain_for_metadata_search = ConversationalRetrievalChain.from
     combine_docs_chain_kwargs={"prompt": prompt},
     chain_type="stuff",
     return_source_documents=True,
-    memory=memory,
+    memory=memory, 
     verbose=True,
 )

@@ -52,5 +52,5 @@ async def get_profile(message: Message, bot: Bot):
 
             admin_text += (f'\n〰️〰️〰️〰️〰️〰️〰️〰️〰️\n\n')
 
-    await message.answer(admin_text, reply_markup=home_page_kb(message.from_user.id))
+    await message.answer(admin_text, reply_markup=home_page_kb(message.from_user.id)) 
 

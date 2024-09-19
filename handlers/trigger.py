@@ -796,4 +796,4 @@ async def message_with_phone_numbers(message: Message, phone_numbers: str):
 
 @trigger_router.message(F.text.contains('🔙 Назад'))
 async def back_button(message: Message, bot: Bot):
-    pass
+    pass 

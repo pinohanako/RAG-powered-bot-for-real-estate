@@ -359,4 +359,4 @@ async def send_echo(message: Message):
     try:
         await message.send_copy(chat_id=message.chat.id)
     except TypeError:
-        await message.reply(text=BOT_REPLIES['no_echo'])
+        await message.reply(text=BOT_REPLIES['no_echo']) 
