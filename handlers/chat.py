@@ -16,7 +16,6 @@ from filters.filters import TrueFilter
 
 logger = logging.getLogger(__name__)
 
-# Инициализируем роутер уровня модуля
 chat_router = Router()
 
 @chat_router.message(F.text)

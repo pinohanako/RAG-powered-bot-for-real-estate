@@ -577,7 +577,7 @@ conversational_rag_chain_for_description_search = RunnableWithMessageHistory(
 )
 '''
 
-template = (f"{PROMPT_TEMPLATES["metadata-prompt"]}\n\n"
+template = (f"{PROMPT_TEMPLATES['metadata-prompt']}\n\n"
             "Используй только следующие фрагменты извлеченные из базы данных (разделенные <data_base></data_base>), чтобы ответить на вопрос.\n" 
             "Текущий разговор:\n\n"
             "Фрагменты базы данных:\n" 
