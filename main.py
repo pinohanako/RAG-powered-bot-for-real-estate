@@ -57,10 +57,12 @@ async def main() -> None:
     
     # Filters are applied somewhere around here
 
-    # TriggerEventMiddleware for handling all written and transcribed messages when filters return True, event type: message
+    # TriggerEventMiddleware for handling all written and transcribed messages 
+    # when filters return True, event type: message
     trigger_router.message.middleware(TriggerEventMiddleware())
     
-    # CallbackMiddleware for providing a callback mechanism to execute custom actions based on specific message types or content, event type: callback_query
+    # CallbackMiddleware for providing a callback mechanism to execute custom actions 
+    # based on specific message types or content, event type: callback_query
     trigger_router.callback_query.middleware(CallbackMiddleware())
 
     # Administrator access to database content
