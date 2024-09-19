@@ -4,24 +4,16 @@ import logging
 import environ
 
 from os import getenv
-
 from aiogram import Bot, Dispatcher
 from aiogram import types
-#from config.config import Config, load_config
 from aiogram.enums import ParseMode
-from lxml import html
 from aiogram import Bot, Dispatcher, types
 from aiogram.client.bot import DefaultBotProperties
-from aiogram.enums import ParseMode 
+from aiogram.enums import ParseMode
 
-from handlers.voice_processing import voice_router
-from handlers.trigger import trigger_router
-from handlers.admin import admin_router
-
-from handlers.chat import chat_router
-from aiogram.utils.chat_action import ChatActionMiddleware
-
-
+from aiogram.utils.chat_action import (
+    ChatActionMiddleware
+)
 from middlewares.outer import (
     VoiceTranscriptionMiddleware,
     CallbackOuterMiddleware,
@@ -31,7 +23,11 @@ from middlewares.inner import (
     CallbackMiddleware,
     AdminMiddleware,
 )
-from utils.utils import get_all_users
+
+from handlers.chat import chat_router
+from handlers.admin import admin_router
+from handlers.trigger import trigger_router
+from handlers.voice_processing import voice_router
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -44,9 +40,9 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 async def main() -> None:
-    bot = Bot(token=BOT_TOKEN, #config.tg_bot.token,
-              default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-                                          #protect_content=True)
+    bot = Bot(token=BOT_TOKEN, 
+              default=DefaultBotProperties(parse_mode=ParseMode.HTML, 
+                                           protect_content=True))
     dp = Dispatcher()
 
     dp.include_router(voice_router)

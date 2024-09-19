@@ -49,7 +49,6 @@ from modules.chain_definition import (
      #conversational_rag_chain_for_description_search)
 
 from filters.filters import KeywordFilter, MyTrueFilter, HasPhoneNumberFilter
-#from handlers.db_functions import get_user_data, insert_user, update_user_data
 from utils.utils import get_images_from_directory, connect_to_db, get_all_users
 
 # Ids and mini-functions for dialog-aiogram framework
@@ -59,10 +58,7 @@ from context_vault.context_vault import (
      GUEST_CHOICES, 
      AGE_CHOICES)
 
-# Инициализируем логгер модуля
 logger = logging.getLogger(__name__)
-
-# Инициализируем роутер уровня модуля
 trigger_router = Router()
 
 EXTEND_BTN_ID = "extend"
@@ -125,14 +121,14 @@ async def address_getter(dialog_manager: DialogManager, **kwargs) -> dict:
                 selected_address = ADDRESS_CHOICES[checkbox_id]
             else:
                 selected_address.append(ADDRESS_CHOICES[checkbox_id])
-    selected_address = {"address": selected_address}
+    address_dict = {"address": selected_address}
     address_value = f"{selected_address['address']}"
 
     conn = connect_to_db()
     cursor = conn.cursor()
     cursor.execute("UPDATE session_store SET selected_address = %s WHERE user_id = %s", (address_value, user_id))
     conn.commit()
-    return selected_address 
+    return address_dict
 
 async def guests_getter(dialog_manager: DialogManager, **kwargs) -> dict: 
     user_id = dialog_manager.event.from_user.id
@@ -145,14 +141,14 @@ async def guests_getter(dialog_manager: DialogManager, **kwargs) -> dict:
                  selected_guests = GUEST_CHOICES[checkbox_id]
             else:
                  selected_guests.append(GUEST_CHOICES[checkbox_id])
-    selected_guests = {"guests": selected_guests}
+    guests_dict = {"guests": selected_guests}
     guests_value = f"{selected_guests['guests']}"
 
     conn = connect_to_db()
     cursor = conn.cursor()
     cursor.execute("UPDATE session_store SET selected_guests = %s WHERE user_id = %s", (guests_value, user_id))
     conn.commit()
-    return selected_guests
+    return guests_dict
 
 async def age_getter(dialog_manager: DialogManager, **kwargs) -> dict:
     user_id = dialog_manager.event.from_user.id
@@ -166,14 +162,14 @@ async def age_getter(dialog_manager: DialogManager, **kwargs) -> dict:
                 selected_ages = AGE_CHOICES[checkbox_id]
             else:
                 selected_ages.append(AGE_CHOICES[checkbox_id])
-    selected_ages = {"ages": selected_ages}
+    ages_dict = {"ages": selected_ages}
     ages_value = f"{selected_ages['ages']}"
 
     conn = connect_to_db()
     cursor = conn.cursor()
     cursor.execute("UPDATE session_store SET selected_age = %s WHERE user_id = %s", (ages_value, user_id))
     conn.commit()
-    return selected_ages
+    return ages_dict
 
 async def check_in_on_input(message: Message, dialog: DialogProtocol, dialog_manager: DialogManager):
     dialog_manager.dialog_data["check_in_date"] = message.text
@@ -434,12 +430,13 @@ booking = Dialog(
         Format("Если хотите, можете забронировать ⬇️"),
         Url(
             Const("Забронировать"),
-            Const(BOT_REPLIES["https://sutochki22.ru/bronirovanie-i-oplata"]),
+            Const(BOT_REPLIES["booking-link"]),
         ),
         MessageInput(Cancel()),
         state=Booking.START,
     ),
 )
+
 ######################################################### CATALOG ####################################################################
 
 async def catalog_next_button_clicked(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -579,7 +576,6 @@ async def process_start_command(message: Message):
      await message.answer(text=BOT_REPLIES['/start'])
 
 @trigger_router.message(F.text == "/price")
-#@flags.chat_action(initial_sleep=2, action="upload_document", interval=3)
 async def price(message: Message, dialog_manager: DialogManager):
      await dialog_manager.start(Form.START, mode=StartMode.RESET_STACK)
 
