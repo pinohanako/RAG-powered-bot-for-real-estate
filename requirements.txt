@@ -4,7 +4,6 @@ aiohttp==3.10.5
 asyncpg
 psycopg2
 proto-plus
-pytz
 protobuf==3.20.1
 sentence-transformers==3.0.1
 sentencepiece==0.1.99
