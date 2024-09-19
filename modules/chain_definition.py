@@ -557,10 +557,6 @@ conversational_rag_chain = RunnableWithMessageHistory(
 
 ### conversational_rag_chain with metadata search: self-query retriever ### 
 
-
-
-
-
 '''
 conversational_rag_chain_for_metadata_search = RunnableWithMessageHistory(
    rag_chain_for_metadata_search,
@@ -581,15 +577,20 @@ conversational_rag_chain_for_description_search = RunnableWithMessageHistory(
 )
 '''
 
-template = """"Твоя задача весело ответить на вопрос и указать стоимость аренды квартиры учитывая только указанное количество человек (но всегда исключай фразы "для двоих человек" и "для троих человек" и "для одного человека""). "
-               "Если нет данных по указанному адресу, просто скажи, что эта квартира не в наличии, но ты можешь предложить другой вариант. Ничего не спрашивай и не проси. "
-               "Пример: Сделала запрос к базе данных, вам действительно может подойти эта квартира! Стоимость составит <стоимость>."
-               "Никогда не здоровайся. "
-               "\n\nИспользуй только следующие фрагменты базы данных (разделенные <data_base></data_base>), чтобы ответить на вопрос. \n\nТекущий разговор: \n\nФрагменты базы данных: \n\n<data_baset> \n{context}\n{chat_history} \n </data_base>\n\nQuestion: {question}\nAnswer: """
+template = (f"{PROMPT_TEMPLATES["metadata-prompt"]}\n\n"
+            "Используй только следующие фрагменты извлеченные из базы данных (разделенные <data_base></data_base>), чтобы ответить на вопрос.\n" 
+            "Текущий разговор:\n\n"
+            "Фрагменты базы данных:\n" 
+            "<data_base>\n"
+            "{context}\n"
+            "{chat_history}\n"
+            "</data_base>\n\n"
+            "Question: {question}\n"
+            "Answer: """)
 
 prompt = PromptTemplate(input_variables=['context', 'question'], template=template)
 
-memory = ConversationBufferMemory(memory_key='chat_history',
+memory = ConversationBufferMemory(memory_key="chat_history",
                                   output_key="answer",
                                   return_messages=True,
                                   token_limit=0)
@@ -603,10 +604,3 @@ conversational_rag_chain_for_metadata_search = ConversationalRetrievalChain.from
     memory=memory,
     verbose=True,
 )
-
-''' {chat_history}'''
-"""Ты информируешь о стоимости аренды. Ничего не придумывай. "
-              "Если нет данных по указанному адресу, просто скажи, что эта квартира не в наличии, но ты можешь предложить другой вариант. "
-              "Указывай стоимость только для количества человек, указанного пользователем. Пользователь не должен знать, что стоимость зависит от количества человек. "
-              "Обратите внимание: у нас отсутствует комиссия, а цены отелях Барнаула, как правило, выше на 40% — сумма может достигать от 3 000 до 5 000 рублей. Объем: 5 предложений"
-              "Никогда не здоровайся.\n\nИспользуй только следующие фрагменты извлеченного контекста (разделенный <context></context>), чтобы ответить на вопрос. \n\nТекущий разговор: \n\nКонтекст: \n\n<context> \n {context} \n {chat_history}\n </context>\n\nQuestion: {question}\nAnswer: """

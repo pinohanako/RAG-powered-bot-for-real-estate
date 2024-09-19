@@ -1,27 +1,12 @@
+
+import uuid
+import asyncio
 import logging
 from typing import Any, Awaitable, Callable, Dict
 from aiogram import Bot, BaseMiddleware
-from aiogram.types import TelegramObject, Message
-
-from aiogram.types import ContentType
+from aiogram.types import TelegramObject, Message, ContentType
 
 from utils.utils import voice_processing, connect_to_db
-
-from os import getenv
-from dotenv import load_dotenv
-
-import asyncio
-import uuid
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, async_scoped_session
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
-#from databases import Database
-from sqlalchemy import create_engine, asc, desc
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
-
-#from asyncpg_lite import DatabaseManager
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +37,7 @@ class VoiceTranscriptionMiddleware(BaseMiddleware):
             data["session_id"] = data_extracted["session_id"]
             data["full_name"] = data_extracted["full_name"]
             result = await handler(event, data)
-            logger.debug('leaving %s with a transcription', __class__.__name__)
+            logger.debug('Leaving %s with a transcription', __class__.__name__)
             return result
         else:
             user = data["event_from_user"]
@@ -74,7 +59,7 @@ class VoiceTranscriptionMiddleware(BaseMiddleware):
                  data["session_id"] = session_id
                  cursor.execute("INSERT INTO session_store (user_id, session_id, full_name) VALUES (%s, %s, %s)", (user_id, session_id, full_name))
                  conn.commit()
-                 logger.debug('Data are inserted into postgres = we have a new user!')
+                 logger.debug('The insertion of data into database signifies the arrival of a NEW USER!')
                  result = await handler(event, data)
 
                  logger.debug('Leaving %s with an original text', __class__.__name__)
@@ -88,8 +73,7 @@ class CallbackOuterMiddleware(BaseMiddleware):
         data: Dict[str, Any]
     ) -> Any:
         logger.debug(
-            'Вошли в миддлварь %s, тип события %s',
-            __class__.__name__,
+            'Event type %s',
             event.__class__.__name__
         )
         user = data["event_from_user"]
@@ -109,6 +93,6 @@ class CallbackOuterMiddleware(BaseMiddleware):
             data["session_id"] = session_id
             cursor.execute("INSERT INTO session_store (user_id, session_id, full_name) VALUES (%s, %s, %s)", (user_id, session_id, full_name))
             conn.commit()
-            logger.debug('Data are inserted into postgres = we have a new user!')
+            logger.debug('The insertion of data into database signifies the arrival of a NEW USER!')
             result = await handler(event, data)
             return result

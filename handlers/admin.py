@@ -12,7 +12,6 @@ from aiogram.utils.chat_action import ChatActionSender
 from context_vault.context_vault import BOT_REPLIES
 from utils.utils import get_all_users, connect_to_db, home_page_kb
 
-# Инициализируем роутер уровня модуля
 admin_router = Router()
 
 ADMINS = os.getenv("ADMINS")

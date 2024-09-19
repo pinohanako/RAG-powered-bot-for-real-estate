@@ -250,7 +250,7 @@ async def guests_button_clicked(callback: CallbackQuery, button: Button, dialog_
 
     if guests["guests"] == "более трех человек":
          await callback.message.answer(f"Квартира по адресу {address['address']} не может вместить более трех человек, поскольку в ней нет достаточного количества спальных мест.")
-         await callback.message.answer("Более того, таких условий нет ни в одной из наших квартир. Всего доброго, ждем вас в следующий раз!")
+         await callback.message.answer(BOT_REPLIES['additional-message'])
          await dialog_manager.done(show_mode=ShowMode.NO_UPDATE)
     elif guests["guests"] is None:
          pass
@@ -340,7 +340,6 @@ form_dialog = Dialog(
             "В этом случае рекомендуем обратиться в раздел каталога, нажмите на меню около поля ввода ⬇️",
             when="extended",
         ),
-        #MessageInput(on_input),
         Row(
             Checkbox(
                 checked_text=Const("☑️ Режим поиска"),
@@ -349,29 +348,30 @@ form_dialog = Dialog(
             ),
             Button(Const("Квартира выбрана"), id="address", on_click=selected_button_clicked),
         ),
+        MessageInput(Cancel()),
         state=Form.START,
         getter=mode_getter,
     ),
     Window(
         Const("Отлично, тогда уточните"),
         Checkbox(
-            checked_text=Const(" 🏠 Ленина, 27А"),
-            unchecked_text=Const("Ленина, 27А"),
+            checked_text=Const(BOT_REPLIES['address-1-with-tooltip']),
+            unchecked_text=Const(BOT_REPLIES['address-1']),
             id=LENINA_A_ID,
             ),
         Checkbox(
-            checked_text=Const(" 🐝 Ленина, 54"),
-            unchecked_text=Const("Ленина, 54"),
+            checked_text=Const(BOT_REPLIES['address-2-with-tooltip']),
+            unchecked_text=Const(BOT_REPLIES['address-2']),
             id=LENINA_ID,
             ),
         Checkbox(
-            checked_text=Const(" ☘️ Калинина, 3"),
-            unchecked_text=Const("Калинина, 3"),
+            checked_text=Const(BOT_REPLIES['address-3-with-tooltip']),
+            unchecked_text=Const(BOT_REPLIES['address-3']),
             id=KALININA_ID,
             ),
         Checkbox(
-            checked_text=Const(" 🔅 Профинтерна, 50"),
-            unchecked_text=Const("Профинтерна, 50"),
+            checked_text=Const(BOT_REPLIES['address-4-with-tooltip']),
+            unchecked_text=Const(BOT_REPLIES['address-4']),
             id=PROFINTERNA_ID,
             ),
         Row(
@@ -465,7 +465,7 @@ booking = Dialog(
         Format("Если хотите, можете забронировать ⬇️"),
         Url(
             Const("Забронировать"),
-            Const('https://sutochki22.ru/bronirovanie-i-oplata'),
+            Const(BOT_REPLIES["https://sutochki22.ru/bronirovanie-i-oplata"]),
         ),
         MessageInput(Cancel()),
         state=Booking.START,
@@ -562,23 +562,23 @@ faq_dialog = Dialog(
      Window(
          Const("Благодарю за интерес! О какой квартире вы бы хотели узнать подробнее?"),
          Checkbox(
-             checked_text=Const(" 🏠 Ленина, 27А"),
-             unchecked_text=Const("Ленина, 27А"),
+             checked_text=Const(BOT_REPLIES['address-1-with-tooltip']),
+             unchecked_text=Const(BOT_REPLIES['address-1']),
              id=LENINA_A_ID,
              ),
          Checkbox(
-             checked_text=Const(" 🐝 Ленина, 54"),
-             unchecked_text=Const("Ленина, 54"),
+             checked_text=Const(BOT_REPLIES['address-2-with-tooltip']),
+             unchecked_text=Const(BOT_REPLIES['address-2']),
              id=LENINA_ID,
              ),
          Checkbox(
-             checked_text=Const(" ☘️ Калинина, 3"),
-             unchecked_text=Const("Калинина, 3"),
+             checked_text=Const(BOT_REPLIES['address-3-with-tooltip']),
+             unchecked_text=Const(BOT_REPLIES['address-3']),
              id=KALININA_ID,
              ),
          Checkbox(
-             checked_text=Const(" 🔅 Профинтерна, 50"),
-             unchecked_text=Const("Профинтерна, 50"),
+             checked_text=Const(BOT_REPLIES['address-4-with-tooltip']),
+             unchecked_text=Const(BOT_REPLIES['address-4']),
              id=PROFINTERNA_ID,
              ),
          Row(
@@ -634,7 +634,7 @@ async def operator(message: Message, bot: Bot):
         admins = [int(admin_id) for admin_id in ADMINS.split(',')]
         full_name = message.from_user.full_name
         user_id = message.from_user.id
-        text = f'Пользователь по имени {full_name} хочет связаться!\nВот, что удалось узнать про него:\n'
+        text = f'Пользователь по имени {full_name} желает связаться!\nВот, что удалось узнать про него:\n'
 
         all_users_data = get_all_users()
 
@@ -659,7 +659,9 @@ async def operator(message: Message, bot: Bot):
                     text += f'💩 Когда заезд: {user.get("check_in_date")}\n'
 
                 if user.get("check_out_date") is not None:
-                     text += f'💩 Когда выезд: {user.get("check_out_date")}\n'
+                    text += f'💩 Когда выезд: {user.get("check_out_date")}\n'
+
+                text += (f'\n〰️〰️〰️〰️〰️〰️〰️〰️〰️\n\n')
 
         for chat_id in admins:
             bot_key = os.getenv("NOTIFICATION_BOT_TOKEN")
@@ -669,11 +671,11 @@ async def operator(message: Message, bot: Bot):
         await bot.send_contact(chat_id=message.chat.id, phone_number=BOT_REPLIES['number_value'], first_name="Елена")
         await message.answer(BOT_REPLIES['/operator-1'])
         await message.answer(BOT_REPLIES['/operator-2'])
-        await message.answer("🌿 Можете также оставить свой номер телефона, если хотите, напишите его так: +79810002222")
+        await message.answer("🌿 Можете также оставить свой номер телефона, если хотите (формат следующий: +79810002222)")
 
 # Process any text if a filter return true
 @trigger_router.message(F.text, KeywordFilter(BOT_REPLIES['address-keywords-1']))
-async def message_with_barnaul_photo_request(message: Message, bot: Bot):
+async def message_with_city_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(3)
         logger.debug('Entered handler processing text with keywords: guess about request to send photos')
@@ -683,7 +685,7 @@ async def message_with_barnaul_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.upload_photo(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(5)
         chat_id = message.from_user.id
-        directory_path = "/home/pino/perseus_chat/var/data/media/barnaul/"
+        directory_path = "/home/pino/perseus_chat/var/data/media/city/"
         album_builder = MediaGroupBuilder(caption="Вот, что у меня нашлось по этом поводу!")
         images = get_images_from_directory(directory_path)
         for image_path in images:
@@ -692,7 +694,7 @@ async def message_with_barnaul_photo_request(message: Message, bot: Bot):
         await bot.send_media_group(chat_id, media)
 
 @trigger_router.message(F.text, KeywordFilter(BOT_REPLIES['address-keywords-2']))
-async def message_with_profinterna_photo_request(message: Message, bot: Bot):
+async def message_with_address_4_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(3)
         logger.debug('Entered handler processing text with keywords: guess about request to send photos')
@@ -702,7 +704,7 @@ async def message_with_profinterna_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.upload_photo(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(4)
         chat_id = message.from_user.id
-        directory_path = "/home/pino/perseus_chat/var/data/media/profinterna/"
+        directory_path = "/home/pino/perseus_chat/var/data/media/address-4/"
         album_builder = MediaGroupBuilder(caption="Собрала для вас несколько подходящих фотографий!")
         images = get_images_from_directory(directory_path)
         for image_path in images:
@@ -711,7 +713,7 @@ async def message_with_profinterna_photo_request(message: Message, bot: Bot):
         await bot.send_media_group(chat_id, media)
 
 @trigger_router.message(F.text, KeywordFilter(BOT_REPLIES['address-keywords-3']))
-async def message_with_lenina_27_photo_request(message: Message, bot: Bot):
+async def message_with_address_2_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(3)
         logger.debug('Entered handler processing text with keywords: guess about request to send photos')
@@ -721,7 +723,7 @@ async def message_with_lenina_27_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.upload_photo(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(4)
         chat_id = message.from_user.id
-        directory_path = "/home/pino/perseus_chat/var/data/media/lenina-27/"
+        directory_path = "/home/pino/perseus_chat/var/data/media/address-2/"
         album_builder = MediaGroupBuilder(caption="Может подойти!")
         images = get_images_from_directory(directory_path)
         for image_path in images:
@@ -730,7 +732,7 @@ async def message_with_lenina_27_photo_request(message: Message, bot: Bot):
         await bot.send_media_group(chat_id, media)
 
 @trigger_router.message(F.text, KeywordFilter(BOT_REPLIES['address-keywords-4']))
-async def message_with_kalinina_photo_request(message: Message, bot: Bot):
+async def message_with_address_1_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(3)
         logger.debug('Entered handler processing text with keywords: guess about request to send photos')
@@ -740,7 +742,7 @@ async def message_with_kalinina_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.upload_photo(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(4)
         chat_id = message.from_user.id
-        directory_path = "/home/pino/perseus_chat/var/data/media/kalinina/"
+        directory_path = "/home/pino/perseus_chat/var/data/media/address-1/"
         album_builder = MediaGroupBuilder(caption="Готово!")
         images = get_images_from_directory(directory_path)
         for image_path in images:
@@ -749,7 +751,7 @@ async def message_with_kalinina_photo_request(message: Message, bot: Bot):
         await bot.send_media_group(chat_id, media)
 
 @trigger_router.message(F.text, KeywordFilter(BOT_REPLIES['address-keywords-5']))
-async def message_with_lenina_54_photo_request(message: Message, bot: Bot):
+async def message_with_address_3_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(2)
         logger.debug('Entered handler processing text with keywords: guess about request to send photos')
@@ -759,7 +761,7 @@ async def message_with_lenina_54_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.upload_photo(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(4)
         chat_id = message.from_user.id
-        directory_path = "/home/pino/perseus_chat/var/data/media/lenina-54/"
+        directory_path = "/home/pino/perseus_chat/var/data/media/address-3/"
         album_builder = MediaGroupBuilder(caption="Вот несколько снимков, которые, на мой взгляд, подойдут!")
         images = get_images_from_directory(directory_path)
         for image_path in images:
@@ -795,36 +797,3 @@ async def message_with_phone_numbers(message: Message, phone_numbers: str):
 @trigger_router.message(F.text.contains('🔙 Назад'))
 async def back_button(message: Message, bot: Bot):
     pass
-'''
-@trigger_router.message((F.text.lower().in_({'едини', 'зови', 'звать'})) & (F.text.contains('админ')))
-async def call_admin(message: Message, bot: Bot):
-    async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
-        admins = [int(admin_id) for admin_id in ADMINS.split(',')]
-        all_users_data = get_all_users()
-        full_name = message.from_user.full_name
-        user_id = message.from_user.id
-        bot_key = os.getenv("NOTIFICATION_BOT_TOKEN")
-        text = f'Пользователь по имени {full_name} желает связаться!\n\n Телеграм ID: {user_id}'
-        for user in all_users_data:
-            if user.get("phone_number") is not None:
-                text += f'🔫 Номер: {user.get("phone_number")}\n'
-
-            if user.get("selected_address") is not None:
-                text += f'🔑 Адрес: {user.get("selected_address")}\n'
-
-            if user.get("refer_id") is not None:
-                text += f'🤮 Количество гостей: {user.get("selected_guests")}\n'
-
-            if user.get("selected_age") is not None:
-                text += f'🤦 Возраст заключающего договор: {user.get("selected_age")}\n'
-
-        for chat_id in admins:
-
-            send_message_url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat_id}&text={text}'
-            requests.post(send_message_url)
-            #await bot.send_message(chat_id=chat_id, text=f'Пользователь по имени {full_name} хочет связаться!\n\n user_id: {user_id}')
-        await message.answer("Отправила уведомление! Если хотите получить обратную связь быстрее, ниже представлен номер")
-
-        await bot.send_contact(chat_id=message.chat.id, phone_number=BOT_REPLIES['number_value'], first_name="Елена")
-        #await message.reply(BOT_REPLIES['admin-number'])
-'''

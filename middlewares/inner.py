@@ -1,15 +1,8 @@
 import logging
-import uuid
-import psycopg2
-from psycopg2.extras import RealDictCursor
 from aiogram import BaseMiddleware, Bot
-from aiogram.dispatcher.flags import get_flag
 from aiogram.types import Message
 from typing import Any, Callable, Dict, Awaitable
 from aiogram.types import TelegramObject
-from aiogram_dialog import Dialog, Window, setup_dialogs, DialogManager, Data
-
-from utils.utils import connect_to_db
 
 logger = logging.getLogger(__name__)
 

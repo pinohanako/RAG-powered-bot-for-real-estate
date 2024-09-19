@@ -12,7 +12,7 @@ class KeywordFilter(BaseFilter):
     # text is a transcribed_message
     # data["text"] = transcribed_message (in outer.py)
     async def __call__(self, message: Message, text: str = None) -> bool:
-        logger.debug('Попали внутрь фильтра %s', self.__class__.__name__)
+        logger.debug('Got inside %s', self.__class__.__name__)
         if text is None:
             # If no transcribed text is passed, use a message text
             text = message.text
@@ -22,9 +22,9 @@ class KeywordFilter(BaseFilter):
         else:
             return False
 
-class MyTrueFilter(BaseFilter):
+class TrueFilter(BaseFilter):
     async def __call__(self, event: TelegramObject) -> bool:
-        logger.debug('Попали внутрь фильтра %s', __class__.__name__)
+        logger.debug('Got inside %s', __class__.__name__)
         return True
 
 class HasPhoneNumberFilter(BaseFilter):
