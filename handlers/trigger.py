@@ -48,7 +48,7 @@ from modules.chain_definition import (
      memory)
      #conversational_rag_chain_for_description_search)
 
-from filters.filters import KeywordFilter, MyTrueFilter, HasPhoneNumberFilter
+from filters.filters import KeywordFilter, TrueFilter, HasPhoneNumberFilter
 from utils.utils import get_images_from_directory, connect_to_db, get_all_users
 
 # Ids and mini-functions for dialog-aiogram framework
@@ -570,7 +570,7 @@ trigger_router.include_router(faq_dialog)
 trigger_router.include_router(booking)
 setup_dialogs(trigger_router)
 
-@trigger_router.message(CommandStart(), MyTrueFilter())
+@trigger_router.message(CommandStart(), TrueFilter())
 async def process_start_command(message: Message):
      await message.answer(f'{message.from_user.full_name}, на связи! 🫡') 
      await message.answer(text=BOT_REPLIES['/start'])

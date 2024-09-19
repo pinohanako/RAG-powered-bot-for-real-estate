@@ -5,9 +5,7 @@ services:
      - 5432:5432
     restart: always
     volumes:
-     - pgdata:/var/lib/postgresql/data 
-#    env_file:
-#     - .env
+     - pgdata:/var/lib/postgresql/data
     env_file:
      - config/postgres.env
 #    secrets:
@@ -19,8 +17,6 @@ services:
       retries: 10
     networks:
       - net
-         #appnet:
-         #    ipv4_address: 172.16.0.3
   adminer:
     image: adminer
     restart: always
@@ -31,8 +27,6 @@ services:
       - 8080:8080
     networks:
       - net
-        #appnet:
-        #    ipv4_address: 172.16.0.3
   bot-uplink:
     restart: always
     container_name: bot-uplink
@@ -40,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    depends_on: #This specifies that a dependency is expected to be “healthy” before starting a dependent service.
+    depends_on:
 #      chroma:
 #        condition: service_healthy
       postgresDB:
@@ -51,15 +45,8 @@ services:
        target: /home/pino/perseus_chat/var/data/
     env_file:
      - .env
-#      - type: bind
-#        source: usr/bin/ffprobe/
-#        target: /home/pino/perseus_chat/etc/ffprobe/
-#    env_file:
-#     - config/app.env
     networks:
      - net
-#        appnet:
-#            ipv4_address: 172.16.0.3
   proxy:
     image: nginx
     volumes:
@@ -69,14 +56,6 @@ services:
         read_only: true
     networks:
       - net
-#        appnet:
-#            ipv4_address: 172.16.0.3
-#    ports:
-#      - 80:80
-#    depends_on:
-#      - backend
-
-
 
 #secrets:
 #   db-secrets:
@@ -92,10 +71,3 @@ volumes:
 networks:
   net:
     driver: bridge
-
-#    appnet:
-#        driver: bridge
-#        ipam:
-#            driver: default
-#            config:
-#                - subnet: "172.16.0.0/28"

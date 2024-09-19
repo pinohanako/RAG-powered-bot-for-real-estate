@@ -22,11 +22,6 @@ class KeywordFilter(BaseFilter):
         else:
             return False
 
-class TrueFilter(BaseFilter):
-    async def __call__(self, event: TelegramObject) -> bool:
-        logger.debug('Got inside %s', __class__.__name__)
-        return True
-
 class HasPhoneNumberFilter(BaseFilter):
     async def __call__(self, message: Message) -> Union[bool, Dict[str, Any]]:
         entities = message.entities or []
@@ -39,3 +34,8 @@ class HasPhoneNumberFilter(BaseFilter):
         if len(found_phome_numbers) > 0:
             return {"phone_numbers": found_phome_numbers}
         return False 
+
+class TrueFilter(BaseFilter):
+    async def __call__(self, event: TelegramObject) -> bool:
+        logger.debug('Got inside %s', __class__.__name__)
+        return True

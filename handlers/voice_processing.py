@@ -75,7 +75,8 @@ async def message_with_address_2_photo_request(message: Message, bot: Bot):
 async def message_with_address_1_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(3)
-        logger.debug('Entered handler processing a transcribed message with keywords: guess about request to send photos')
+        logger.debug('Entered handler processing a transcribed message with keywords: '
+            'guess about request to send photos')
         await message.reply(BOT_REPLIES['photo-search-4'])
     await asyncio.sleep(3)
 
@@ -93,7 +94,8 @@ async def message_with_address_1_photo_request(message: Message, bot: Bot):
 async def message_with_address_3_photo_request(message: Message, bot: Bot):
     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
         await asyncio.sleep(2)
-        logger.debug('Entered handler processing a transcribed message with keywords: guess about request to send photos')
+        logger.debug('Entered handler processing a transcribed message with keywords: '
+            'guess about request to send photos')
         await message.reply(BOT_REPLIES['photo-search-5'])
     await asyncio.sleep(2)
 
@@ -109,7 +111,8 @@ async def message_with_address_3_photo_request(message: Message, bot: Bot):
 
 @voice_router.message(F.content_type == "voice")
 async def voice_processing(message: Message, bot: Bot, text: str = None):
-     async with ChatActionSender.typing(bot=bot, chat_id=message.from_user.id):
+     chat_id = message.from_user.id
+     async with ChatActionSender.typing(bot=bot, chat_id=chat_id):
          user_id = message.from_user.id
          conn = connect_to_db()
          cursor = conn.cursor()
@@ -124,6 +127,7 @@ async def voice_processing(message: Message, bot: Bot, text: str = None):
          formatted_prompt = (
          "Голосовое сообщение: "
          f"{text}")
-         bot_response = conversational_rag_chain.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
+         bot_response = conversational_rag_chain.invoke({"input": formatted_prompt}, 
+                                                         config={"configurable": {"session_id": session_id}})
          bot_answer = bot_response['answer']
          await message.answer(bot_answer)
