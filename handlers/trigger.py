@@ -171,7 +171,9 @@ async def age_getter(dialog_manager: DialogManager, **kwargs) -> dict:
     conn.commit()
     return ages_dict
 
-async def check_in_on_input(message: Message, dialog: DialogProtocol, dialog_manager: DialogManager):
+async def check_in_on_input(message: Message, 
+                            dialog: DialogProtocol, 
+                            dialog_manager: DialogManager):
     dialog_manager.dialog_data["check_in_date"] = message.text
     
     user_answer = message.text
@@ -182,7 +184,9 @@ async def check_in_on_input(message: Message, dialog: DialogProtocol, dialog_man
     conn.commit()
     await dialog_manager.next() 
 
-async def check_out_on_input(message: Message, dialog: DialogProtocol, dialog_manager: DialogManager):
+async def check_out_on_input(message: Message, 
+                             dialog: DialogProtocol, 
+                             dialog_manager: DialogManager):
     dialog_manager.dialog_data["check_out_date"] = message.text
     
     user_answer = message.text
@@ -195,12 +199,18 @@ async def check_out_on_input(message: Message, dialog: DialogProtocol, dialog_ma
 
 async def close_subdialog(callback: CallbackQuery, button: Button,
                           dialog_manager: DialogManager):
-    await dialog_manager.done(result={'address': selected_address, 'guests': selected_guests, 'age': selected_age})
+    await dialog_manager.done(result={'address': selected_address, 
+                                      'guests': selected_guests, 
+                                      'age': selected_age})
 
-async def selected_button_clicked(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def selected_button_clicked(callback: CallbackQuery, 
+                                  button: Button, 
+                                  dialog_manager: DialogManager):
     await dialog_manager.next()
 
-async def address_button_clicked(CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def address_button_clicked(CallbackQuery, 
+                                 button: Button, 
+                                 dialog_manager: DialogManager):
     dialog_manager.dialog_data["address"] = await address_getter(dialog_manager)
     address = await address_getter(dialog_manager)
     if address["address"] is not None:
@@ -208,13 +218,17 @@ async def address_button_clicked(CallbackQuery, button: Button, dialog_manager: 
     else:
          pass
 
-async def guests_button_clicked(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def guests_button_clicked(callback: CallbackQuery, 
+                                button: Button, 
+                                dialog_manager: DialogManager):
     dialog_manager.dialog_data["guests"] = await guests_getter(dialog_manager)
     guests = await guests_getter(dialog_manager)
     address = await address_getter(dialog_manager)
 
     if guests["guests"] == "более трех человек":
-         await callback.message.answer(f"Квартира по адресу {address['address']} не может вместить более трех человек, поскольку в ней нет достаточного количества спальных мест.")
+         await callback.message.answer(f"Квартира по адресу {address['address']} не может вместить"
+                                       " более трех человек, поскольку в ней нет достаточного" 
+                                       " количества спальных мест.")
          await callback.message.answer(BOT_REPLIES['additional-message'])
          await dialog_manager.done(show_mode=ShowMode.NO_UPDATE)
     elif guests["guests"] is None:
@@ -222,14 +236,18 @@ async def guests_button_clicked(callback: CallbackQuery, button: Button, dialog_
     else:
          await dialog_manager.next()
 
-async def age_button_clicked(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def age_button_clicked(callback: CallbackQuery, 
+                             button: Button, 
+                             dialog_manager: DialogManager):
     dialog_manager.dialog_data["age"] = await age_getter(dialog_manager)
     age = await age_getter(dialog_manager)
     address = await address_getter(dialog_manager)
 
     if age["ages"] == "до 21":
-         await callback.message.answer(f"Прошу прощения, мы можем заключить договор только с гостями, которым <b>исполнился 21 год</b>")
-         await callback.message.answer(f"Всего доброго, ждем вас в сопровождении взрослых на {address['address']}!")
+         await callback.message.answer(f"Прошу прощения, мы можем заключить договор только"
+                                        " с гостями, которым <b>исполнился 21 год</b>")
+         await callback.message.answer(f"Всего доброго, ждем вас в сопровождении взрослых "
+                                        "на {address['address']}!")
          await dialog_manager.done(show_mode=ShowMode.NO_UPDATE)
     elif age["ages"] is None:
          pass
@@ -255,7 +273,9 @@ async def check_apology(bot_response):
 async def main_process_result(start_data: Data, result: Any, dialog_manager: DialogManager):
     logger.debug(f'Data: {result}')
 
-async def price_search_handler(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def price_search_handler(callback: CallbackQuery, 
+                               button: Button, 
+                               dialog_manager: DialogManager):
     chat_id = dialog_manager.event.from_user
     #user_id = dialog_manager.event.from_user.id
     #conn = connect_to_db()
@@ -266,11 +286,14 @@ async def price_search_handler(callback: CallbackQuery, button: Button, dialog_m
 
     address = await address_getter(dialog_manager)
     guests = await guests_getter(dialog_manager)
-    formatted_prompt = f"Насколько хорошо квартира по адресу {address['address']} подойдет для {guests['guests']}? Укажи стоимость, чтобы я точно знал, подойдет ли мне эта квартира"
-    #formatted_prompt = f"Квартира по адресу {address['address']} подойдет для {guests['guests']}? Укажи стоимость, но ни в коем случае НИКОГДА не говори для скольки человек указываешь стоимость."
+    formatted_prompt = f"Насколько хорошо квартира по адресу {address['address']} подойдет"
+                        " для {guests['guests']}? Укажи стоимость"
+    #formatted_prompt = f"Квартира по адресу {address['address']} подойдет для {guests['guests']}?" 
+    #" Укажи стоимость, но ни в коем случае НИКОГДА не говори для скольки человек указываешь стоимость."
     chat_history = "Меня заинтересовало"
     memory.clear()
-    bot_response = conversational_rag_chain_for_metadata_search.invoke({"question": formatted_prompt, "chat_history": chat_history}) 
+    bot_response = conversational_rag_chain_for_metadata_search.invoke({"question": formatted_prompt, 
+                                                                        "chat_history": chat_history}) 
     memory.clear()
     bot_answer = bot_response['answer']
     #bot_response = conversational_rag_chain_for_metadata_search.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
@@ -281,11 +304,13 @@ async def price_search_handler(callback: CallbackQuery, button: Button, dialog_m
     if apology_detected:
     #if guests['guests'] == 'троих человек':
         await callback.message.answer(BOT_REPLIES['exception-answer'])
-        await callback.message.answer("Не стесняйтесь попросить найти <u>фотографии</u>, если еще не видели (только не забудьте указать точный адрес)")
+        await callback.message.answer("Не стесняйтесь попросить найти <u>фотографии</u>, "
+                                      "если еще не видели (только не забудьте указать точный адрес)")
         await callback.message.answer(BOT_REPLIES['admin-number-3'])
         await dialog_manager.start(Booking.START)
     else:
-        await callback.message.answer("Не стесняйтесь попросить найти <u>фотографии</u>, если еще не видели (только не забудьте указать точный адрес)")
+        await callback.message.answer("Не стесняйтесь попросить найти <u>фотографии</u>, если "
+                                      "еще не видели (только не забудьте указать точный адрес)")
         await callback.message.answer(BOT_REPLIES['admin-number-2'])
         await dialog_manager.start(Booking.START)
 
@@ -302,7 +327,8 @@ form_dialog = Dialog(
             "Сейчас режим поиска {extended_str}.\n"
         ),
         Const(
-            "В этом случае рекомендуем обратиться в раздел каталога, нажмите на меню около поля ввода ⬇️",
+            "В этом случае рекомендуем обратиться в раздел "
+            "каталога, нажмите на меню около поля ввода ⬇️",
             when="extended",
         ),
         Row(
@@ -402,22 +428,31 @@ form_dialog = Dialog(
         getter=age_getter,
     ),
     Window(
-        Const("Поняла, когда вы планируете заселиться в квартиру? Пожалуйста, напишите в ответ дату заезда в формате ДД.ММ. и время прибытия в формате ЧЧ:ММ\n\n"
-              "Прошу ограничиться только необходимой информацией в вашем ответе. Это важно, чтобы подготовиться к вашему прибытию\n"
+        Const("Поняла, когда вы планируете заселиться в квартиру? "
+              "Пожалуйста, напишите в ответ дату заезда"
+              "в формате ДД.ММ. и время прибытия в формате ЧЧ:ММ\n\n"
+              "Пожалуйста, ничего лишнего! 🤫\n"
               "Например, 19 октября в 12:00"),
         MessageInput(check_in_on_input),
         state=Form.check_in_date,
         preview_add_transitions=[Next()],
     ),
     Window(
-        Const("Отличный день!\nИ последняя просьба: напишите дату заезда аналогично в формате ДД.ММ. и время прибытия ЧЧ:ММ\n\nСнова прошу предоставить только необходимые сведения!\nНапример, 20 октября в 18:00"),
+        Const("Отличный день!\nИ последняя просьба: напишите дату "
+              "заезда аналогично в формате ДД.ММ. "
+              "и время прибытия ЧЧ:ММ\n\nСнова прошу предоставить "
+              "только необходимые сведения!\n"
+              "Например, 20 октября в 18:00"),
         MessageInput(check_out_on_input),
         state=Form.check_out_date,
         preview_add_transitions=[Next()],
     ),
     Window(
-        Format("Мы почти у цели!\nДополнительно проверим наличие по адресу {dialog_data[address][address]}... ⬇️"),
-        Button(text=Const("Узнать стоимость"), id="process_query_id", on_click=price_search_handler),
+        Format("Мы почти у цели!\nДополнительно проверим наличие " 
+               "по адресу {dialog_data[address][address]}... ⬇️"),
+        Button(text=Const("Узнать стоимость"), 
+               id="process_query_id", 
+               on_click=price_search_handler),
         MessageInput(Cancel()),
         state=Form.query
     ),
@@ -439,11 +474,15 @@ booking = Dialog(
 
 ######################################################### CATALOG ####################################################################
 
-async def catalog_next_button_clicked(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def catalog_next_button_clicked(callback: CallbackQuery, 
+                                      button: Button, 
+                                      dialog_manager: DialogManager):
     dialog_manager.dialog_data["address"] = await address_getter(dialog_manager)
     await dialog_manager.next()
 
-async def catalog_search_button_handler(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def catalog_search_button_handler(callback: CallbackQuery, 
+                                        button: Button, 
+                                        dialog_manager: DialogManager):
     user_name = callback.from_user.username
     address = await address_getter(dialog_manager)
 
@@ -727,7 +766,8 @@ async def message_with_address_3_photo_request(message: Message, bot: Bot):
         await asyncio.sleep(4)
         chat_id = message.from_user.id
         directory_path = "/home/pino/perseus_chat/var/data/media/address-3/"
-        album_builder = MediaGroupBuilder(caption="Вот несколько снимков, которые, на мой взгляд, подойдут!")
+        album_builder = MediaGroupBuilder(caption="Вот несколько снимков, "
+            "которые, на мой взгляд, подойдут!")
         images = get_images_from_directory(directory_path)
         for image_path in images:
             album_builder.add(type="photo", media=FSInputFile(image_path))
@@ -749,7 +789,8 @@ async def message_with_phone_numbers(message: Message, phone_numbers: str):
     )
     conn.commit()
     for chat_id in admins:
-        text = f'Пользователь по имени 🔫 {full_name}🔫  оставил номер {", ".join(phone_numbers)}!\n\nТелеграм ID: {user_id}'
+        text = f'Пользователь по имени 🔫 {full_name}🔫  оставил номер '
+                '{", ".join(phone_numbers)}!\n\nТелеграм ID: {user_id}'
         bot_key = os.getenv("NOTIFICATION_BOT_TOKEN")
         send_message_url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat_id}&text={text}'
         requests.post(send_message_url)
