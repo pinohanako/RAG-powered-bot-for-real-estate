@@ -1,1 +1,1 @@
-# RAG-powered Telegram bot for a real estate agency conversations
+# RAG-powered Telegram bot for real estate agency conversations
