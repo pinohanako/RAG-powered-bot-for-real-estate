@@ -1,8 +1,8 @@
-FROM python:3.8
+FROM python:3.8 AS builder
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 ADD requirements.txt /
-RUN pip install -r /requirements.txt --timeout 10000
+RUN pip install --no-cache-dir -r /requirements.txt --timeout 10000
 ADD main.py /
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONASYNCIODEBUG=1

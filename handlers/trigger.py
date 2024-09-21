@@ -675,7 +675,7 @@ async def operator(message: Message, bot: Bot):
         await bot.send_contact(chat_id=message.chat.id, phone_number=BOT_REPLIES['number_value'], first_name="Елена")
         await message.answer(BOT_REPLIES['/operator-1'])
         await message.answer(BOT_REPLIES['/operator-2'])
-        await message.answer("🌿 Можете также оставить свой номер телефона, если хотите (формат следующий: +79810002222)")
+        await message.answer("🌿 Можете также оставить свой номер телефона, если хотите (формат: +79810002222)")
 
 # Process any text if a filter return true
 @trigger_router.message(F.text, KeywordFilter(BOT_REPLIES['address-keywords-1']))
