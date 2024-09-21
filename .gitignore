@@ -6,3 +6,4 @@ context_vault/
 .mypy_cache/
 __pycache__/
 env-configmap.yaml
+postgres-env-configmap.yaml
