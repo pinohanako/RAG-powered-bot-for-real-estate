@@ -31,7 +31,7 @@ async def get_profile(message: Message, bot: Bot):
         )
         for user in all_users_data:
             text += (
-                f'🤢 Полное имя: {user.get("full_name")}\n'
+                f'🎃 Полное имя: {user.get("full_name")}\n'
                 f'👤 Телеграм ID: {user.get("user_id")}\n'
                 f'⏰ Впервые присоединился: {user.get("created_at")}\n'
             )
@@ -42,16 +42,16 @@ async def get_profile(message: Message, bot: Bot):
                 text += f'🔑 Адрес: {user.get("selected_address")}\n'
 
             if user.get("selected_guests") is not None:
-                text += f'🤮 Количество гостей: {user.get("selected_guests")}\n'
+                text += f'🎃 Количество гостей: {user.get("selected_guests")}\n'
 
             if user.get("selected_age") is not None:
                 text += f'🤦 Возраст: {user.get("selected_age")}\n'
 
             if user.get("check_in_date") is not None:
-                text += f'💩 Когда заезд: {user.get("check_in_date")}\n'
+                text += f'🫠 Когда заезд: {user.get("check_in_date")}\n'
 
             if user.get("check_out_date") is not None:
-                text += f'💩 Когда выезд: {user.get("check_out_date")}\n'
+                text += f'🫠 Когда выезд: {user.get("check_out_date")}\n'
 
             text += (f'\n〰️〰️〰️〰️〰️〰️〰️〰️〰️\n\n')
 

@@ -479,13 +479,12 @@ async def catalog_search_button_handler(callback: CallbackQuery, button: Button,
 
     address = await address_getter(dialog_manager)
 
-    formatted_prompt = f"Расскажи о квартире по адресу {address['address']}! Почему стоит выбрать эту кватиру для посуточной аренды?"
+    formatted_prompt = f"Расскажи о квартире по адресу {address['address']}! Почему стоит выбрать эту кватиру для аренды?"
     bot_response = conversational_rag_chain_for_description_search.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
     bot_answer = bot_response['answer']
     await callback.message.answer(text=bot_answer)
     await callback.message.answer("Если еще не видели, как выглядит квартира, не стесняйтесь попросить показать <u>фотографии</u> (только не забудьте указать точный адрес)")
     await callback.message.answer(f"Для того, чтобы узнать стоимость, рекомендуем обратиться в раздел стоимости, нажмите на меню возле поля ввода ⬇️")
-    await callback.message.answer(f"{user_name}, наш телефон для связи: +7(913)-029-0023 ✨")
 
     await dialog_manager.done(show_mode=ShowMode.NO_UPDATE)
     await dialog_manager.start(Booking.START)
