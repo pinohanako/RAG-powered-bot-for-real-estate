@@ -647,6 +647,11 @@ async def operator(message: Message, bot: Bot):
                 text += (
                     f'\nТелеграм ID: {user_id}\n'
                 )
+                if user.get("user_id") in admins:
+                    text += f"\n{full_name} — один из администраторов! Чтобы посмотреть содержимое базы данных пользователей, напишите команду 'Панель' с большой буквы в ос>
+                    text += (f'〰〰〰〰〰〰〰〰〰\n\n')
+                    continue
+
                 if user.get("phone_number") is not None:
                     text += f'😱 Номер: +{user.get("phone_number")} 😱\n'
 

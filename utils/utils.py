@@ -87,9 +87,7 @@ def get_all_users(table_name='session_store', count=False):
     cursor = conn.cursor()
 
     admins = [int(admin_id) for admin_id in ADMINS.split(',')]
-    cursor.execute("SELECT full_name, user_id, created_at, phone_number, selected_address, selected_guests, "
-                          "selected_age, check_in_date, check_out_date FROM session_store" 
-                          "WHERE user_id NOT IN %s", (tuple(admins),)) ##WHERE user_id NOT IN %s", (tuple(admins),)
+    cursor.execute("SELECT full_name, user_id, created_at, phone_number, selected_address, selected_guests, selected_age, check_in_date, check_out_date FROM session_store") ##WHERE user_id NOT IN %s", (tuple(admins),)
     all_users_data = cursor.fetchall()
 
     if count:
