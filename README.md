@@ -3,7 +3,7 @@
 ![How a generative model imagines the project](./BotPic.jpg)
 ##### How a generative model imagines the project
 The project's core functionality resides within the "app" directory. The **Retrieval-Augmented Generation (RAG) chains** act as a bridge, integrating **vector databases** and a **generative language model** to offer contextually aware responses to user inquiries. The filters are designed to detect and record the presence of specific key phrases within any text-based input to send photos when required, whether it is a transcribed message or a regular text message. This is achieved by transcription occurring before applying filters while passing an outer middleware.
-By transcribing the messages first, the filters can effectively identify and capture the desired keywords or phrases.
+By transcribing the messages first, the filters can effectively identify and capture the desired keywords or phrases to trigger specified handlers.
 **docker-compose**.yml and **Dockerfile** files are used for containerization and deployment, allowing the application to be easily packaged and run in Docker containers.
 
 Meanwhile, the "**hidden**" directory serves as a secure storage for sensitive data, including media files categorized by location and vector creation materials. The **vector stores** themselves are also located within this directory both for simple similarity search and self-query techniques.
