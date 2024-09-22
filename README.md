@@ -67,7 +67,7 @@ The description is generated automatically based on the metadata provided in the
 PostgreSQL is used to store chat message histories to take into account previous messages unique to each user, which enable the dialogue system to engage in more natural and interactive conversations with users. The database additionally stores information about users, specifically, their full names, mobile phones and also preferences in services they provide themselves while engaging in an interactive menu (trigger.py). Tables named "message store" and "users store" are connected to each other primarily by session_id, which is unique for each chat.
 
 #### Qdrant Vector Store
-Qdrant is used to create a vector store for metadata search. It allows a conversational chain to request additional information for each object about the price, which depends on the number of guests, as well as an apartment's detailed description.
+Qdrant is used to create a vector store for metadata search. It allows a conversational chain to request additional information for each object about the price depended on the number of guests, as well as an apartment's detailed description.
 
 #### Chroma Vector Store
 Chroma is used to create a vector store for any stuff information. It is also used to split documents and create chunks for txt prices.
