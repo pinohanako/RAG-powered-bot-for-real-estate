@@ -60,7 +60,7 @@ Meanwhile, the "**hidden**" directory serves as a secure storage for sensitive d
 LangChain to create multiple chains for different tasks, such as contextualizing questions, answering general questions about apartments, a company and performing various types of searches (e.g., description search, metadata search for prices). These chains were designed to handle specific aspects of the dialogue and information retrieval process. LangChain also helped in creating a history-aware retriever, which is responsible for retrieving relevant information based on the user's input and previous conversation history.
 
 #### Dialogue manager 
-A library to create an interactive menu where users answer a series of questions to provide preferences in services. The answers are used to create a prompt that is tailored to a company's needs, ensuring the prompts to be well-structured. Specifically, the prompt can provide the user with the cost for a specified number of guests or find a short description of the object. 
+A library to create an interactive menu where users answer a series of questions to provide preferences in services. The answers are used to create a prompt that is tailored to a company's needs, ensuring the prompt to be well-structured. Specifically, the prompt can provide the user with the cost for a specified number of guests or find a short description of the object. 
 The description is generated automatically based on the metadata provided in the system table.
 
 #### PostgreSQL
