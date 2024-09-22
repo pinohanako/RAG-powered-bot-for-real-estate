@@ -81,7 +81,6 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from utils.utils import float_to_str, price_float_value, connect_to_db
 from context_vault.context_vault import PROMPT_TEMPLATES, SELF_QUERY
 
-#########################3
 from langchain.prompts import (
     ChatPromptTemplate,
     FewShotChatMessagePromptTemplate,
@@ -104,7 +103,7 @@ docs = []
 with open('/home/pino/perseus_chat/var/data/csv-items/metadata.csv', newline="", encoding='utf-8-sig') as csvfile:
     csv_reader = csv.DictReader(csvfile)
     for i, row in enumerate(csv_reader):
-        # Фильтр строк с пустыми значениями в столбце "Средняя_стоимость_аренды_для_одного_человека"
+        # Filter rows with empty values ​​in the column "Average_rent_cost_per_person"
         if row['Стоимость аренды для одного человека']:
             to_metadata = {col: row[col] for col in columns_to_metadata if col in row}
             values_to_embed = {k: row[k] for k in columns_to_embed if k in row}
@@ -358,8 +357,8 @@ def create_compression_retriever(embeddings, base_retriever, chunk_size, k, simi
     )
     return compression_retriever
 
-"""**для правил**
-вариант 1
+"""**for rules**
+First case
 """
 
 retriever = Vectorstore_backed_retriever(db_rules, "similarity", k=5)
@@ -373,12 +372,12 @@ DocumentCompression = create_compression_retriever(
 retriever_DocumentCompression = DocumentCompression
 retriever_DocumentCompression
 
-"""вариант 2"""
+"""Second case"""
 
 retriever_rules = db_rules.as_retriever(search_kwargs={"k": 5})
 retriever_rules
 
-"""# Совмещение ретриверов + сжатие
+"""# Retriever Combination + Compression
 **compression_retriever_reordered**
 """
 '''
@@ -456,13 +455,9 @@ history_aware_retriever = create_history_aware_retriever(
     llm, retriever_rules, contextualize_q_prompt
 )
 
-#history_aware_retriever_for_metadata_search = create_history_aware_retriever(
-#    llm, retriever_items, contextualize_q_prompt
-#)
-
-#history_aware_retriever_for_description_search = create_history_aware_retriever(
-#    llm, retriever_items, contextualize_q_prompt
-#)
+history_aware_retriever_for_description_search = create_history_aware_retriever(
+    llm, retriever_items, contextualize_q_prompt
+)
 
 ### Answer question ###
 system_prompt = (
@@ -480,19 +475,6 @@ prompt = ChatPromptTemplate.from_messages(
    ]
 )
 
-### ### Answer question with metadata search: self-query retriever
-#system_prompt_for_metadata_search = (
-#    f'{PROMPT_TEMPLATES["system-prompt-for-metadata-search"]}'
-#    '{context}')
-
-#prompt_for_metadata_search = ChatPromptTemplate.from_messages(
-#   [
-#       ("system", system_prompt_for_metadata_search),
-#       MessagesPlaceholder(variable_name="chat_history"),
-#       ("human", "{input}"),
-#   ]
-#)
-'''
 ### Answer question with description search ###
 system_prompt_for_description_search  = (
     f'{PROMPT_TEMPLATES["system-prompt-for-description-search"]}'
@@ -506,20 +488,14 @@ prompt_for_description_search = ChatPromptTemplate.from_messages(
        ("human", "{input}"),
    ]
 )
-'''
+
 ### question_answer_chain ### 
 
 question_answer_chain = create_stuff_documents_chain(llm, prompt) 
 rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
-#### question_answer_chain with metadata search: self-query retriever ### 
-
-#question_answer_chain_for_metadata_search = create_stuff_documents_chain(llm, prompt_for_metadata_search) 
-#rag_chain_for_metadata_search = create_retrieval_chain(history_aware_retriever_for_metadata_search, question_answer_chain_for_metadata_search)
-
-
 ### question_answer_chain for descripton search: self-query retriever ###
-'''
+
 question_answer_chain_for_description_search = create_stuff_documents_chain(
     llm, 
     prompt_for_description_search)
@@ -527,17 +503,8 @@ question_answer_chain_for_description_search = create_stuff_documents_chain(
 rag_chain_for_description_search = create_retrieval_chain(
     history_aware_retriever_for_description_search, 
     question_answer_chain_for_description_search)
-'''
-table_name = "message_store"
 
-#conn = connect_to_db()
-#cursor = conn.cursor()
-#cursor.execute("SELECT session_id FROM session_store WHERE user_id = %s", (user_id,))
-#try:
-#    data_extracted = cursor.fetchone()
-#    session_id = data_extracted["session_id"]
-#except TypeError:
-#    pass
+table_name = "message_store"
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
    return PostgresChatMessageHistory(
@@ -555,18 +522,7 @@ conversational_rag_chain = RunnableWithMessageHistory(
    output_messages_key="answer",
 )
 
-### conversational_rag_chain with metadata search: self-query retriever ### 
 
-'''
-conversational_rag_chain_for_metadata_search = RunnableWithMessageHistory(
-   rag_chain_for_metadata_search,
-   get_session_history,
-   input_messages_key="input",
-   history_messages_key="chat_history",
-   output_messages_key="answer",
-)
-'''
-'''
 ### conversational_rag_chain for description search: self-query retriever ### 
 conversational_rag_chain_for_description_search = RunnableWithMessageHistory(
    rag_chain_for_description_search,
@@ -575,8 +531,8 @@ conversational_rag_chain_for_description_search = RunnableWithMessageHistory(
    history_messages_key="chat_history",
    output_messages_key="answer",
 )
-'''
 
+### conversational_rag_chain for metadata search: self-query retriever ### 
 template = (f"{PROMPT_TEMPLATES['metadata-prompt']}\n\n"
             "Используй только следующие фрагменты извлеченные из базы данных (разделенные <data_base></data_base>), чтобы ответить на вопрос.\n" 
             "Текущий разговор:\n\n"

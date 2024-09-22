@@ -45,8 +45,8 @@ from collections import defaultdict
 
 from modules.chain_definition import (
      conversational_rag_chain_for_metadata_search, 
-     memory)
-     #conversational_rag_chain_for_description_search)
+     memory,
+     conversational_rag_chain_for_description_search)
 
 from filters.filters import KeywordFilter, TrueFilter, HasPhoneNumberFilter
 from utils.utils import get_images_from_directory, connect_to_db, get_all_users
@@ -277,48 +277,35 @@ async def price_search_handler(callback: CallbackQuery,
                                button: Button, 
                                dialog_manager: DialogManager):
     chat_id = dialog_manager.event.from_user
-    #user_id = dialog_manager.event.from_user.id
-    #conn = connect_to_db()
-    #cursor = conn.cursor()
-    #cursor.execute("SELECT session_id FROM session_store WHERE user_id = %s", (user_id,))
-    #data_extracted = cursor.fetchone()
-    #session_id = data_extracted["session_id"]
+    user_id = dialog_manager.event.from_user.id
+    conn = connect_to_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT session_id FROM session_store WHERE user_id = %s", (user_id,))
+    data_extracted = cursor.fetchone()
+    session_id = data_extracted["session_id"]
 
     address = await address_getter(dialog_manager)
     guests = await guests_getter(dialog_manager)
+    ages = await age_getter(dialog_manager)
     formatted_prompt = f"Насколько хорошо квартира по адресу {address['address']} подойдет"
                         " для {guests['guests']}? Укажи стоимость"
-    #formatted_prompt = f"Квартира по адресу {address['address']} подойдет для {guests['guests']}?" 
-    #" Укажи стоимость, но ни в коем случае НИКОГДА не говори для скольки человек указываешь стоимость."
-    chat_history = "Меня заинтересовало"
+    chat_history = f"Пользователю около {ages['ages']} лет"
     memory.clear()
     bot_response = conversational_rag_chain_for_metadata_search.invoke({"question": formatted_prompt, 
                                                                         "chat_history": chat_history}) 
     memory.clear()
     bot_answer = bot_response['answer']
-    #bot_response = conversational_rag_chain_for_metadata_search.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
-    #bot_answer = bot_response['answer']
+    bot_response = conversational_rag_chain_for_metadata_search.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
+    bot_answer = bot_response['answer']
     await callback.message.answer(bot_answer)
     
     apology_detected = await check_apology(bot_answer)
     if apology_detected:
-    #if guests['guests'] == 'троих человек':
-        await callback.message.answer(BOT_REPLIES['exception-answer'])
-        await callback.message.answer("Не стесняйтесь попросить найти <u>фотографии</u>, "
-                                      "если еще не видели (только не забудьте указать точный адрес)")
-        await callback.message.answer(BOT_REPLIES['admin-number-3'])
-        await dialog_manager.start(Booking.START)
-    else:
-        await callback.message.answer("Не стесняйтесь попросить найти <u>фотографии</u>, если "
-                                      "еще не видели (только не забудьте указать точный адрес)")
-        await callback.message.answer(BOT_REPLIES['admin-number-2'])
-        await dialog_manager.start(Booking.START)
-
-    #    formatted_prompt = f"Какие есть варианты для {guests['guests']}? Какой адрес, стоимость и почему стоит выбрать эту квартиру"
-    #    #bot_response_2 = formatted_prompt
-    #    bot_response_2 = conversational_rag_chain_for_metadata_search.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
-    #    bot_answer_2 = bot_response_2['answer']
-    #    await callback.message.answer(bot_answer_2)
+        formatted_prompt = f"Какие есть варианты для {guests['guests']}? Какой адрес, стоимость и почему стоит выбрать эту квартиру"
+        bot_response_2 = formatted_prompt
+        bot_response_2 = conversational_rag_chain_for_metadata_search.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
+        bot_answer_2 = bot_response_2['answer']
+        await callback.message.answer(bot_answer_2)
 
 form_dialog = Dialog(
     Window(
@@ -480,35 +467,6 @@ async def catalog_next_button_clicked(callback: CallbackQuery,
     dialog_manager.dialog_data["address"] = await address_getter(dialog_manager)
     await dialog_manager.next()
 
-async def catalog_search_button_handler(callback: CallbackQuery, 
-                                        button: Button, 
-                                        dialog_manager: DialogManager):
-    user_name = callback.from_user.username
-    address = await address_getter(dialog_manager)
-
-    address_value = address['address']
-    number_value = BOT_REPLIES['number_value']
-    if address_value == BOT_REPLIES['addres-value-1']:
-        await callback.message.answer(text=BOT_REPLIES['description-address-1'])
-        await callback.message.answer(text=BOT_REPLIES['guide-to-send-photos'])
-        await callback.message.answer(text=BOT_REPLIES['price'])
-        await callback.message.answer(f"{user_name}, наш телефон для связи: {number_value}")
-    elif address_value == BOT_REPLIES['addres-value-2']:
-        await callback.message.answer(text=BOT_REPLIES['description-address-2'])
-        await callback.message.answer(text=BOT_REPLIES['guide-to-send-photos'])
-        await callback.message.answer(text=BOT_REPLIES['price'])
-        await callback.message.answer(f"{user_name}, наш телефон для связи: {number_value}")
-    elif address_value == BOT_REPLIES['addres-value-3']:
-        await callback.message.answer(text=BOT_REPLIES['description-address-3'])
-        await callback.message.answer(text=BOT_REPLIES['guide-to-send-photos'])
-        await callback.message.answer(text=BOT_REPLIES['price'])
-        await callback.message.answer(f"{user_name}, наш телефон для связи: {number_value}")
-    elif address_value == BOT_REPLIES['addres-value-4']:
-        await callback.message.answer(text=BOT_REPLIES['description-address-4'])
-        await callback.message.answer(text=BOT_REPLIES['guide-to-send-photos'])
-        await callback.message.answer(text=BOT_REPLIES['price'])
-        await callback.message.answer(f"{user_name}, наш телефон для связи: {number_value}")
-'''
 async def catalog_search_button_handler(callback: CallbackQuery, button: Button, dialog_manager: DialogManager): # session_id: str = None
     chat_id = dialog_manager.event.from_user
     user_id = dialog_manager.event.from_user.id
@@ -522,7 +480,6 @@ async def catalog_search_button_handler(callback: CallbackQuery, button: Button,
     address = await address_getter(dialog_manager)
 
     formatted_prompt = f"Расскажи о квартире по адресу {address['address']}! Почему стоит выбрать эту кватиру для посуточной аренды?"
-    #bot_response = formatted_prompt
     bot_response = conversational_rag_chain_for_description_search.invoke({"input": formatted_prompt}, config={"configurable": {"session_id": session_id}})
     bot_answer = bot_response['answer']
     await callback.message.answer(text=bot_answer)
@@ -532,7 +489,7 @@ async def catalog_search_button_handler(callback: CallbackQuery, button: Button,
 
     await dialog_manager.done(show_mode=ShowMode.NO_UPDATE)
     await dialog_manager.start(Booking.START)
-'''
+
 async def catalog_getter(dialog_manager: DialogManager, **kwargs) -> Dict[str, Any]:
     if dialog_manager.find(EXTEND_CATALOG_ID).is_checked():
         return {
@@ -659,16 +616,16 @@ async def operator(message: Message, bot: Bot):
                     text += f'🔑 Адрес: {user.get("selected_address")}\n'
 
                 if user.get("selected_guests") is not None:
-                    text += f'🤮 Количество гостей: {user.get("selected_guests")}\n'
+                    text += f'🤫 Количество гостей: {user.get("selected_guests")}\n'
 
                 if user.get("selected_age") is not None:
-                    text += f'🤦 Возраст: {user.get("selected_age")}\n'
+                    text += f'🎃 Возраст: {user.get("selected_age")}\n'
 
                 if user.get("check_in_date") is not None:
-                    text += f'💩 Когда заезд: {user.get("check_in_date")}\n'
+                    text += f'🫨 Когда заезд: {user.get("check_in_date")}\n'
 
                 if user.get("check_out_date") is not None:
-                    text += f'💩 Когда выезд: {user.get("check_out_date")}\n'
+                    text += f'🫨 Когда выезд: {user.get("check_out_date")}\n'
 
                 text += (f'\n〰️〰️〰️〰️〰️〰️〰️〰️〰️\n\n')
 
