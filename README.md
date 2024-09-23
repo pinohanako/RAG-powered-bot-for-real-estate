@@ -2,10 +2,10 @@
 ![How a generative model imagines the project](./BotPic.jpg)
 ##### How a generative model imagines the project
 
-The project is aimed at automating and streamlining daily conversations with clients concerning frequently asked questions about the rules of residence, booking, real estate and selection of suitable properties for the user. 
+The project is aimed at automating and streamlining daily conversations with clients concerning frequently asked questions about the rules of residence, booking, real estate and selection of suitable properties for a user. 
 For the purpose, two types of retrievers and three langchains were used because it was necessary to set different prompts and perform different types of search depending on the state in the dialogue. 
 
-#### A list of functions that your project could offer
+#### A list of functions the project could offer
 ### Context-Sensitive Text Generation: 
 The system can generate personalized and contextually relevant text about a specific company or real estate project. It can provide detailed information, highlight unique features, and tailor the content to the user's interests and previous interactions.
 
