@@ -1,6 +1,28 @@
 # RAG-powered telegram bot for real estate agency conversations
 ![How a generative model imagines the project](./BotPic.jpg)
 ##### How a generative model imagines the project
+
+The project is aimed at automating and streamlining daily conversations with clients concerning frequently asked questions about the rules of residence, booking, real estate and selection of suitable properties for the user. 
+For the purpose, two types of retrievers and three langchains were used because it was necessary to set different prompts and perform different types of search depending on the state in the dialogue. Here's a breakdown of the project components and their functionalities:
+
+###Retriever Types:
+####Similarity Search with Compression: 
+This retriever is designed to handle general questions and conversations. It utilizes a compression technique to efficiently search for relevant information based on the user's input, whether it's text or voice.
+####Self-Query Retriever: 
+Two instances of the self-query retriever have implemented for specific tasks:
+####Metadata Search: 
+This retriever is triggered when a user wants to know the cost of a property. It asks the user a series of four questions (using the aiogram-dialog framework) to gather the necessary information to calculate the final cost.
+####Description Search: 
+Another instance of the self-query retriever is employed when a user seeks a detailed description of a property. It likely retrieves and presents comprehensive information about the property's features and characteristics.
+
+###Langchains:
+####Conversational RAG Chain for General Questions: 
+This langchain utilizes the similarity search retriever to handle a wide range of user inquiries. It aims to provide accurate and contextually relevant responses to general questions about residence rules, booking processes, and real estate.
+####Conversational RAG Chain for Metadata Search: 
+Here, the self-query retriever is integrated to guide users through the process of determining the cost of a property. By asking a set of questions, it collects the required details to calculate and present the final cost.
+####Conversational RAG Chain for Description Search: 
+This langchain, equipped with the self-query retriever, assists users in obtaining comprehensive descriptions of properties. It retrieves and presents detailed information, ensuring users have a clear understanding of the property's attributes.
+
 ### Technologies used:
 #### LangChain
 Multiple chains for different tasks created, such as contextualizing questions, answering general questions about apartments and a company and performing various types of searches (e.g., description search, metadata search for prices). These chains were designed to handle specific aspects of the dialogue and information retrieval process. 
