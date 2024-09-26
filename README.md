@@ -46,11 +46,9 @@ Qdrant is used to create a vector store for metadata search. It allows a convers
 Chroma is used to split documents and create chunks. It is also used to create a vector store for any stuff information.
 
 ## Project structure
-The project's core functionality resides within an "app" directory. The filters are designed to detect and record the presence of specific key phrases within any text-based input to send photos when required, whether it is a transcribed message or a regular text message. This is achieved by transcription occurring before applying filters while passing an outer middleware.
-By transcribing the messages first, the filters can effectively identify and capture the desired keywords or phrases to catch an intent and trigger specified handlers. Specifically, handlers for sending photos.
-**docker-compose**.yml and **Dockerfile** files are used for containerization and deployment.
+The project's core functionality resides within an "app" directory. The filters are designed to detect and record the presence of specific key phrases within any text-based input to send photos when required, whether it is a transcribed message or a regular text message. This is achieved by transcription occurring before applying filters while passing an outer middleware. By transcribing the messages first, the filters can effectively identify and capture the desired keywords or phrases to catch an intent and trigger specified handlers. Specifically, handlers for sending photos.
 
-Meanwhile, the "**hidden**" directory serves as a secure storage for sensitive data mounted to the main directory, including media files categorized by location and vector creation materials. 
+Meanwhile, the "**hidden**" directory serves as a local storage for sensitive data mounted to the main directory, including media files categorized by location and vector creation materials. 
 The **vector stores** themselves are also located within this directory both for simple similarity search and self-query techniques.
 
 ### Local project tree
