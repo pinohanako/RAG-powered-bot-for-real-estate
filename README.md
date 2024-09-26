@@ -23,7 +23,7 @@ All messages exchanged between users and the system, along with user preferences
 ### Joke Imitation and Sticker/Photo Response
 To add a touch of humor and engagement, the system can respond to stickers and photos sent by users with witty jokes or humorous comments. 
 
-## A breakdown of the project components and their functionalities:
+## A breakdown of the project components and their functionalities
 ### Langchains
 #### Conversational RAG Chain for General Questions
 This langchain utilizes the similarity search retriever to handle a wide range of user inquiries. It aims to provide accurate and contextually relevant responses to general questions about residence rules, booking processes, and real estate.
@@ -32,7 +32,7 @@ The system collects the required details to guide users through the process of d
 #### Conversational RAG Chain for Description Search
 This langchain, equipped with the self-query retriever, assists users in obtaining descriptions of properties. It retrieves and presents detailed information, ensuring users have a clear understanding of the property's attributes.
 
-### Other technologies used:
+### Other technologies used
 #### Aiogram-dialog 
 A library to create an interactive menu where users answer a series of questions to provide preferences in services. The answers are used to create a prompt, ensuring the prompt to be well-structured and tailored to a company's needs. Specifically, a prompt behind the interface allows langchains to form a structured request and answer a user's question about the rental price, depending on the information provided in the interactive menu, and also to find a short description of an object. Descriptions are generated automatically based on the metadata provided in a csv table.
 
@@ -45,7 +45,7 @@ Qdrant is used to create a vector store for metadata search. It allows a convers
 #### Chroma Vector Store
 Chroma is used to split documents and create chunks. It is also used to create a vector store for any stuff information.
 
-#### Project structure
+## Project structure
 The project's core functionality resides within an "app" directory. The filters are designed to detect and record the presence of specific key phrases within any text-based input to send photos when required, whether it is a transcribed message or a regular text message. This is achieved by transcription occurring before applying filters while passing an outer middleware.
 By transcribing the messages first, the filters can effectively identify and capture the desired keywords or phrases to catch an intent and trigger specified handlers. Specifically, handlers for sending photos.
 **docker-compose**.yml and **Dockerfile** files are used for containerization and deployment.
