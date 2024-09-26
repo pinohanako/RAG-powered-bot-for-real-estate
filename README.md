@@ -1,6 +1,6 @@
 # RAG-powered telegram bot for real estate agency conversations
 ![How a generative model imagines the project](./BotPic.jpg)
-##### How a generative model imagines the project
+***<p style="text-align:center;">How a generative model imagines the project</p>*** 
 
 The project is aimed at automating daily conversations with clients concerning frequently asked questions about the rules of residence, booking, real estate and selection of suitable properties for a user. It was necessary to perform different types of search depending on dialogue states and set different prompts, so two types of retrievers were used. The **Retrieval-Augmented Generation (RAG) chains** act as a bridge, integrating **vector databases** and a **generative language model** to offer contextually aware responses to user inquiries.
 
