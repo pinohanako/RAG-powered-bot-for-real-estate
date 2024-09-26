@@ -68,7 +68,7 @@ The **vector stores** themselves are also located within this directory both for
   │   │   ├── inner.py
   │   │   └── outer.py
   │   ├── modules/
-  │   │   └── chain_definition.py # Specifies the RAG chain.
+  │   │   └── chain_definition.py # Specifies the RAG chains.
   │   ├── utils/
   │   │   └── utils.py
   │   ├── docker-compose.yml
