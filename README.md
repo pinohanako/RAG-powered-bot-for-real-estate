@@ -4,8 +4,8 @@
 
 The project is aimed at automating daily conversations with clients concerning frequently asked questions about the rules of residence, booking, real estate and selection of suitable properties for a user. It was necessary to perform different types of search depending on dialogue states and set different prompts, so two types of retrievers were used. The **Retrieval-Augmented Generation (RAG) chains** act as a bridge, integrating **vector databases** and a **generative language model** to offer contextually aware responses to user inquiries.
 
-#### A list of functions the project could offer
-### Context-Sensitive Text Generation: 
+## Functions the project could offer
+### Context-Sensitive Text Generation
 The system can generate personalized and contextually relevant text about a specific company. It can provide detailed information, highlight unique features, and tailor the content to the user's interests and previous interactions.
 
 ### Voice Message Recognition and Response
@@ -15,7 +15,7 @@ The system can accurately interpret and respond to voice messages. Users can ask
 Upon request, either text or voice, the system can send photos of real estate objects.
 
 ### Cost Estimation Based on Guest Characteristics
-By analyzing user preferences, guest profiles, and property attributes, the system can estimate the cost of a real estate object. It takes into account factors like the number of guests, age, and other specific requirements to provide an accurate cost estimate.
+By analyzing property attributes, the system can estimate the cost of a real estate object. It takes into account factors like the number of guests, age to provide an accurate cost estimate.
 
 ### User Message and Preference Storage
 All messages exchanged between users and the system, along with user preferences and service choices, are stored in a secure database. This data is used to personalize future interactions, send notifications to administrators and offer a seamless user experience across multiple sessions.
