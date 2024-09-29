@@ -1,6 +1,6 @@
 # RAG-powered telegram bot for real estate agency conversations
 ![How a generative model imagines the project](./BotPic.jpg)
-***<p align=center>How a generative model imagines the project</p>***
+***<p align=center>Figure 1. How a generative model imagines the project</p>***
 
 The project is aimed at automating daily conversations with clients concerning frequently asked questions about the rules of residence, booking, real estate and selection of suitable properties for a user. It was necessary to perform different types of search depending on dialogue states and set different prompts, so two types of retrievers were used. The **Retrieval-Augmented Generation (RAG) chains** act as a bridge, integrating **vector databases** and a **generative language model** to offer contextually aware responses to user inquiries.
 
@@ -46,12 +46,7 @@ Qdrant is used to create a vector store for metadata search. It allows a convers
 Chroma is used to split documents and create chunks. It is also used to create a vector store for any stuff information.
 
 ## Project structure
-The project's core functionality resides within an "app" directory. The filters are designed to detect and record the presence of specific key phrases within any text-based input to send photos when required, whether it is a transcribed message or a regular text message. This is achieved by transcription occurring before applying filters while passing an outer middleware. By transcribing the messages first, the filters can effectively identify and capture the desired keywords or phrases to catch an intent and trigger specified handlers. Specifically, handlers for sending photos.
-
-Meanwhile, the "**hidden**" directory serves as a local storage for sensitive data mounted to the main directory, including media files categorized by location and vector creation materials. 
-The **vector stores** themselves are also located within this directory both for simple similarity search and self-query techniques.
-
-### Local project tree
+While Figure 2 visually represents my project’s structure, the subsequent section offer a detailed explanation of this one
 ```
 /home/user/
   ├── app/
@@ -97,4 +92,8 @@ The **vector stores** themselves are also located within this directory both for
                       ├── chroma.sqlite3
                       └── 80a586f9-3867-473d-85b0-be4e1177c2df
 ```
+***<p align=center>Figure 2. Local project tree</p>***
+The project's core functionality resides within an "app" directory. The filters are designed to detect and record the presence of specific key phrases within any text-based input to send photos when required, whether it is a transcribed message or a regular text message. This is achieved by transcription occurring before applying filters while passing an outer middleware. By transcribing the messages first, the filters can effectively identify and capture the desired keywords or phrases to catch an intent and trigger specified handlers. Specifically, handlers for sending photos.
 
+Meanwhile, the "**hidden**" directory serves as a local storage for sensitive data mounted to the main directory, including media files categorized by location and vector creation materials. 
+The **vector stores** themselves are also located within this directory both for simple similarity search and self-query techniques.
