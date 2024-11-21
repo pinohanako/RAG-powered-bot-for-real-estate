@@ -1,4 +1,4 @@
-# RAG-powered telegram bot for real estate agency conversations
+# RAG-powered bot for real estate agency conversations
 ![How a generative model imagines the project](./BotPic.jpg)
 ***<p align=center>Figure 1. How a generative model imagines the project</p>***
 
